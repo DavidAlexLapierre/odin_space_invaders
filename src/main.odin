@@ -2,6 +2,8 @@ package main
 
 import "core:fmt"
 import sdl3 "vendor:/sdl3"
+import "render"
+import "game"
 
 main :: proc() {
     if !sdl3.Init(sdl3.INIT_VIDEO) {
@@ -12,11 +14,15 @@ main :: proc() {
     window: ^sdl3.Window
     renderer: ^sdl3.Renderer
 
-    sdl3.CreateWindowAndRenderer("Alien invader", 1200, 800, nil, &window, &renderer)
+    sdl3.CreateWindowAndRenderer("Alien invader", 800, 600, nil, &window, &renderer)
     assert(window != nil && renderer != nil, string(sdl3.GetError()))
 
     running := true
     event: sdl3.Event
+
+    ctx := game.context_new()
+    scn := game.scene_new(&ctx)
+    game.context_set_scene(&ctx, &scn)
 
     for running {
         for sdl3.PollEvent(&event) {
@@ -26,8 +32,6 @@ main :: proc() {
             }
         }
 
-        sdl3.SetRenderDrawColor(renderer, 20, 20, 20, 255)
-        sdl3.RenderClear(renderer)
-        sdl3.RenderPresent(renderer)
+        render.draw(renderer)
     }
 }
